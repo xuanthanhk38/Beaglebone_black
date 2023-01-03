@@ -1,0 +1,35 @@
+Based on S2 button (BBB boot button) we got 2 configurations:
+
+1. S2 released - SYSBOOT[4:0] = [11100]
+ The boot order will be:
+ 	1 MMMC1 (eMMC)
+ 	2 MMC0 (SD card)
+ 	3 UART0
+ 	4 USB0
+ 
+ 2. S2 pressed (SYSBOOT[4:0] = 11000) the boot order will be:
+ 	1 SPI0
+ 	2 MMC0 (SD card)
+ 	3 USB0
+ 	4 UART0
+ 	
+ So, there are 5 boot mode supported for this board including SPI
+ 
+1. eMMC Boot (MMC1):
+  eMMC is connected over MMC1 interface, this is the fastest boot mode possible and it is right there on the board
+  we do not need to add any external component for booting, this is the default boot mode.
+  When you reset the board, the board start booting from loading the images stored in the eMMC.
+  And if no boot image is found in the eMMC, the board will automatically try to boot from next device on the list.
+  
+2. SD card
+ If the default ( that is booting from eMMC) boot mode fails, then it will try to
+ boot from the SD card you connected to the sd card connector at MMC0
+ interface.
+ If you press S2 and then apply the power, then the board will try to boot from
+ the SPI first, and if nothing is connected to SPI, it will try to boot from the
+ MMC0 where our SD card is found
+ Also remember that we can use SD card boot to flash boot images on the
+ eMMC. So if you want to write new images on the eMMC then you can boot
+ through sd card, then write new images to eMMC, then reset the board, so
+ that your board can boot using new images stored in the eMMC.
+

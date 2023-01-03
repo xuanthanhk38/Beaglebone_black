@@ -1,0 +1,55 @@
+For the succesful boot of BBB, we need:
+
+ Apply power ---> RBL (ROM Boot Loader)--> SPL/ML0 --> U-boot --> Linux Kernel --> RFS (root file system
+
+----------------------------------------------------------------------------------------------
+I. FIRST STAGE: RBL
+->Stack setup
+->Watchdog timer configuaration
+->System clock configuration using PLL
+->Search memory devices or boot interfaces for MLO/SPL
+->Copy MLO/SPL into the internal SRAM of the chip
+-> Execute  MLO/SPL
+
+Details:
+
+1 ROM Boot Loader
+ After apply power the RBL is the first software component to run on the SOC. the ROM code does the initial initializtions:
+  - CPU, static ram, sd card (if uboot stored in sd card), wdt, clock (PLL)
+  
+   if the RBL could not able to load the second stage within the timer in watchdog then WDG timer will exprie and it will reset the board.
+   
+ Load SPL/MLO Into the RAM
+
+After that the RBL goes for the booting, it want to load the second stage boot loader found in the external memory or peripherals.
+- it will go through all the boot list and the loop is exited if a valid booting is found and executed or upon the watchdog expiration. Please refer to the boot_mode.txt for boot list.
+
+- Ex, it find the second stage boot on the eMMC memory (or sd card) of the board, then the ROM code copies the MLO/SPL to the internal RAM of the SOC.
+- The MLO/SPL will have its own image header and it is decided by manufactor
+
+
+	------------------------
+	| load_addr = 0xx000000 | } image header | ==> MLO
+	| size                  |                |
+	|------------------------                |
+	|   SPL                 |                |
+	|                       |                |
+	|                       |                |
+	|------------------------                |
+	
+	(SPL and MLO are almost same except the MLO has a header which contain some info like load address, size of the image...)
+- The RBL first read the image header of the MLO, from the image header it will get 2 informations.
+	+ One is the load address
+	+ another one is the total size of the MLO
+- The RBL will load the MLO to the internal RAM address indicated by the image header of the MLO
+- After this stage. RBL's job is almost over it will start the exucation of the MLO
+-------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------
+II. MLO/SPL job
++ it does UART console initialization to print out the debug message
++ reconfigure the PLL to the desired value
++ initializes the DDR register to use the DDR memory
++ Does muxing configuration of boot peripherals pin, because its next job is load the u-boot from the boot peripherals.
++ copy the uboot image into the DDR memory
+
