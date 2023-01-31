@@ -1,0 +1,14 @@
+----------------------------- PROCESS-----------------------------------------------------------
+1. Process đc định nghĩa là sự thực thi của 1 chương trình mỗi process hoạt động trong 1 không gian vùng nhớ riêng biệt và không xâm phạm lẫn nhau và đc định danh bởi số duy nhất PID -Process IDentifier, ngoài ra còn có 1 số chỉ số liên quan khác như UID - User ID, PPID Parent PID.
+ Vùng nhớ của process đc tạo bởi memory management subsystem trong kernel.
+ Khi chương trình khởi chạy,, nó sẽ phân bổ tài nguyên như stack, heap.. và khi process kết thúc những tài nguyên này sẽ bị thu hồi bởi hệ thống: mọi bộ nhớ đc giải phóng,, tất cả fd đều đc đóng.
+ 
+2. Các process có thể giao tiếp vs nhau bằng cách sử dụng IPC (Inter-process communication)
+
+ -----------------------------------------------------------------------------------------------
+ 
+---------------------------- THREAD -----------------------------------------------------------
+ Trong mỗi process lại có 1 or nhiều tác cụ con gọi là Thread (tiểu trình), các thread này sử dụng chung vùng nhớ trong toàn bộ phạm vi của process.
+- Tất cả process đều bắt đầu với 1 thread chạy hàm main() và đc gọi là main thread.
+- có thể tạo thêm threads bằng hàm pthread_create(3)
+ 
