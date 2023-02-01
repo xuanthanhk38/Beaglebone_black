@@ -1,0 +1,15 @@
+--------------------------------------------------------------------------------------------------
+1. Sử dụng hàm fork() để tạo 1 process mới
+	fork  ---- return = PID of child -- PARENT
+	 	--- return = 0 ----- Child
+	 	--- return = -1 Fail
+
+ - Hàm fork() sẽ tạo mới 1 tiến trình bằng việc sao chép tiến trình gọi nó. Tiến trình mới đc tạo ra gọi là tiến trình con (child),, tiến trình gọi hàm fork là tiến trình cha (parent).
+ - Khi thành công, PID của process con sẽ đc trả về trong process cha, nếu process đang gọi hàm fork() là process con thì sẽ return 0.
+ 
+ - Sau khi gọi hàm call, process con sẽ copy từ process cha: text, stack heap, file descriptor. thực thi cùng line code.
+ - Trong trường hợp có bất cứ thay đổi nào, một bản copy riêng biệt của stack hay heap sẽ được tạo ra cho tiến trình con(tiến trình đang cố gắng thay đổi nội dung của statck hoặc heap). Tuy nhiên text segment là readonly vì thế nên cả tiến trình chả và con đều chia sẻ chung vùng này.
+ - Đối vs những phân vùng còn lại, thay đổi data ở process con sẽ ko làm thay đổi cha hoặc con khác do cơ chế Copy on Write (CoW):
+ 	+ Kernel sẽ ko copy vật lý vùng nhớ của Parent.
+ 
+ 

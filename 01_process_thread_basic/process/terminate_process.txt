@@ -1,0 +1,31 @@
+1. Kết thúc bình thường (Normally termination)
+
+Một process có thể hoàn thành việc thực thi của nó một cách bình thường bằng cách gọi system call _exit().
+
+#include <unistd.h>
+void _exit(int status);
+
+Đối số status truyền vào cho hàm _exit() định nghĩa trạng thái kết thúc (terminal status) của process, có giá trị từ 0 - 255. Trạng thái này sẽ được gửi tới process cha để thông báo rằng process con kết thúc thành công (success) hay thất bại (failure). Process cha sẽ sử dụng system call wait() để đọc trạng thái này.
+
+Để cho thuận tiện, giá trị status bằng 0 nghĩa là process thực thi thành công, ngược lại khác 0 nghĩa là thất bại.
+
+Trên thực tế, chúng ta sẽ không sử dụng trực tiếp system call _exit() mà thay vào đó sẽ sử dụng exit() của thư viện stdlib.h.
+
+#include <stdlib.h>
+void exit(int status);
+
+Ngoài ra, ta cũng có thể sử dụng return n trong hàm main() . Điều này tương đương với việc gọi exit(n) . Đây chính là lý do khi kết thúc hàm main() chúng ta thường hay sử dụng return 0 - success.
+
+2. Kết thúc bất thường (Abnormal termination)
+
+Ở phần này, mình muốn giới thiệu với mọi người kill command, đây là một command hữu ích dùng để kết thúc process đang chạy một cách chủ động.
+
+/* code */
+printf("Test kill command\n");
+while (1);
+
+
+3. Parent có thể thu thập giá trị trả về bằng wait(int a) or waitpid(int a)
+- Vấn đề xảy ra: sẽ có độ trễ khi CHILD kết thúc và PARENT thu thập giá trị trả về.
+	+ trong thời gian đó, giá trị trả về đc lưu ở đâu đó và số PID sẽ ko đc sử dung lại --> zombie state. việc này sẽ gây tốn tai nguyên nếu PARENT ko thu đc giá trị trả về và xử lý
+
